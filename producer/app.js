@@ -4,9 +4,8 @@ const http = require("http");
 const { client, connectRedis } = require("./redisClient");
 const { initSocket, emitEvent } = require("../socket/socketServer");
 
-app.use(cors());
-
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -50,4 +49,20 @@ app.post("/vip-order", async (req, res) => {
 
 server.listen(3000, "0.0.0.0", () => {
   console.log("Productor corriendo en puerto 3000");
+});
+
+app.post("/preparing", (req, res) => {
+  const { cliente, platillo } = req.body;
+
+  emitEvent("preparing", { cliente, platillo });
+
+  res.send("ok");
+});
+
+app.post("/ready", (req, res) => {
+  const { cliente, platillo } = req.body;
+
+  emitEvent("ready", { cliente, platillo });
+
+  res.send("ok");
 });
