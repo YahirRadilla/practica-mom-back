@@ -68,8 +68,3 @@ app.post("/ready", (req, res) => {
 
   res.send("ok");
 });
-
-app.get("/orders", async (req, res) => {
-  const orders = await client.lRange("ordersHistory", 0, -1);
-  res.json(orders.map((o) => JSON.parse(o)));
-});
