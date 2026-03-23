@@ -1,7 +1,10 @@
 const express = require("express");
+const cors = require("cors");
 const http = require("http");
 const { client, connectRedis } = require("./redisClient");
 const { initSocket, emitEvent } = require("../socket/socketServer");
+
+app.use(cors());
 
 const app = express();
 app.use(express.json());
