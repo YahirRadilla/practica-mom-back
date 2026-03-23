@@ -29,15 +29,15 @@ async function processOrders() {
     const order = await client.lPop("ordersQueue");
 
     if (order) {
-      const { cliente, platillo, tipo } = JSON.parse(order);
+      const { id, cliente, platillo, tipo } = JSON.parse(order);
 
-      await notify("/preparing", { cliente, platillo });
+      await notify("/preparing", { id, cliente, platillo });
 
       console.log(`Preparando ${platillo} para ${cliente}`);
 
       await sleep(5000);
 
-      await notify("/ready", { cliente, platillo });
+      await notify("/ready", { id, cliente, platillo });
 
       console.log(`Pedido listo: ${cliente}`);
     } else {

@@ -15,34 +15,36 @@ connectRedis();
 
 // Pedido normal
 app.post("/order", async (req, res) => {
-  const { cliente, platillo } = req.body;
+  const { id, cliente, platillo } = req.body;
 
-  const order = JSON.stringify({
+  const orderData = {
+    id: Date.now(),
     cliente,
     platillo,
     tipo: "normal",
-  });
+  };
 
-  await client.rPush("ordersQueue", order);
+  await client.rPush("ordersQueue", JSON.stringify(orderData));
 
-  emitEvent("newOrder", { cliente, platillo, tipo: "normal" });
+  emitEvent("newOrder", orderData);
 
   res.send("Pedido enviado");
 });
 
 // Pedido VIP
 app.post("/vip-order", async (req, res) => {
-  const { cliente, platillo } = req.body;
+  const { id, cliente, platillo } = req.body;
 
-  const order = JSON.stringify({
+  const orderData = {
+    id: Date.now(),
     cliente,
     platillo,
     tipo: "vip",
-  });
+  };
 
-  await client.lPush("ordersQueue", order);
+  await client.lPush("ordersQueue", JSON.stringify(orderData));
 
-  emitEvent("newOrder", { cliente, platillo, tipo: "vip" });
+  emitEvent("newOrder", orderData);
 
   res.send("Pedido VIP enviado");
 });
@@ -52,15 +54,15 @@ server.listen(3000, "0.0.0.0", () => {
 });
 
 app.post("/preparing", (req, res) => {
-  const { cliente, platillo } = req.body;
+  const { id, cliente, platillo } = req.body;
 
-  emitEvent("preparing", { cliente, platillo });
+  emitEvent("preparing", { id, cliente, platillo });
 
   res.send("ok");
 });
 
 app.post("/ready", (req, res) => {
-  const { cliente, platillo } = req.body;
+  const { id, cliente, platillo } = req.body;
 
   emitEvent("ready", { cliente, platillo });
 
