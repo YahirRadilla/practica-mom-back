@@ -64,7 +64,12 @@ app.post("/preparing", (req, res) => {
 app.post("/ready", (req, res) => {
   const { id, cliente, platillo } = req.body;
 
-  emitEvent("ready", { cliente, platillo });
+  emitEvent("ready", { id, cliente, platillo });
 
   res.send("ok");
+});
+
+app.get("/orders", async (req, res) => {
+  const orders = await client.lRange("ordersHistory", 0, -1);
+  res.json(orders.map((o) => JSON.parse(o)));
 });
